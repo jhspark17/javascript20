@@ -117,3 +117,35 @@ p.text{
 p.text span{
   color: #6feaf6;
 }
+
+.buttons-container{
+  display: flex;
+  justify-content: space-around;
+
+}
+
+.buttons-container button.submit{
+  margin-top: 20px;
+  cursor: pointer;
+  background-color: #3498db;
+  border: 2px solid #3498db;
+  border-radius: 4px;
+  display: block;
+  font-size: 16px;
+  padding:5px;
+  color: #fff;
+  width: 40%;
+}
+
+.buttons-container button.clear{
+  margin-top: 20px;
+  cursor: pointer;
+  background-color: red;;
+  border: 2px solid red;
+  border-radius: 4px;
+  display: block;
+  font-size: 16px;
+  padding: 5px;
+  color: #fff;
+  width: 40%;
+}

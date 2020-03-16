@@ -9,20 +9,12 @@ let total = 9
 function addElement(ele){
   total--
   let span = document.createElement('span');
+  let mark = player ? "X" : "O";
   ele.classList.add('selected');
-  if (player) {
-    span.innerHTML = "X";
-    span.classList.add("X");
-    ele.appendChild(span);
-  } else {
-    span.innerHTML = "O";
-    span.classList.add("O");
-    ele.appendChild(span)
-  }
-  if (checkWinner()) {
-    if (player) return "X";
-    else return "O";
-  } else player = !player
+  span.innerHTML = mark;
+  span.classList.add(mark);
+  ele.appendChild(span);
+  return checkWinner() ? true : false;
 }
 
 function checkWinner() {
@@ -32,8 +24,7 @@ function checkWinner() {
     if (winner) fin = winner;
   })
   if (fin) return fin;
-  fin = checkColumns(rows);
-  if (fin) return fin;
+  return checkColumns(rows) ? true : false;
 }
 
 function checkColumns(rows) {
@@ -131,8 +122,8 @@ container.addEventListener('click', (e) => {
     span.classList.add(person);
     span.innerHTML = `${person} is the winner`
     winner.appendChild(span)
+    return;
   } 
-  if (!total) {
-    winner.innerHTML = "It's a tie"
-  }
+  if (!total) winner.innerHTML = "It's a tie"
+  player = !player;
 })

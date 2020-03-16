@@ -37,6 +37,14 @@ body {
   align-items:center;
 }
 
+.spot:hover{
+  background-color: lightgrey;
+}
+
+.selected:hover{
+  background-color: transparent !important;
+}
+
 .x{
   color: red;
   font-size: 100px;

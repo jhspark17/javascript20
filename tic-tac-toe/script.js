@@ -6,7 +6,6 @@ const winner = document.querySelector(".result");
 let player = true;
 let total = 9
 
-
 function addElement(ele){
   total--
   let span = document.createElement('span');
@@ -43,14 +42,18 @@ function checkColumns(rows) {
   for (let i = 0; i < cols.length; i++) {
     let col = cols[i].childNodes;
     for (let j = 1; j <= 5; j += 2) {
-      if(col[j].classList.contains("selected")) {
-        if (j === 1) arr[0].push(col[j].childNodes[0].innerHTML)
-        if (j === 3) arr[1].push(col[j].childNodes[0].innerHTML)
-        if (j === 5) arr[2].push(col[j].childNodes[0].innerHTML)
+      if (j === 1) {
+        arr[0].push(col[j].classList.contains("selected") ? col[j].childNodes[0].innerHTML : " ");
+      }
+      if (j === 3) {
+        arr[1].push(col[j].classList.contains("selected") ? col[j].childNodes[0].innerHTML : " ")
+      }
+      if (j === 5) {
+        arr[2].push(col[j].classList.contains("selected") ? col[j].childNodes[0].innerHTML : " ")
       }
     }
   }
-  console.log(arr)
+  console.log(arr);
   for (let i = 0; i < arr.length; i++) {
     let winner = 0;
     for (let j = 0; j < arr.length; j++) {
@@ -60,6 +63,31 @@ function checkColumns(rows) {
     if (winner === 3) return true;
     if (winner === -3) return true;
   }
+  let arr2 = [[], [], []]
+  for (let i = 0; i < arr.length; i++) {
+    for (let j = 0; j < arr.length; j++) {
+      arr2[i].push(arr[j][i]);
+    }
+  }
+  console.log(arr2)
+  if (checkDiag(arr)) return true;
+  return false;
+}
+
+function checkDiag(arr) {
+  let winner = 0;
+  console.log("hello")
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i][i] === "X") winner++;
+    if (arr[i][i] === "O") winner--;
+  }
+  if (winner === 3 || winner === -3) return true;
+  winner = 0;
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[arr.length - 1 - i][i] === "X") winner++;
+    if (arr[arr.length - 1 - i][i] === "O") winner--;
+  }
+  if (winner === 3 || winner === -3) return true;
   return false;
 }
 
@@ -97,15 +125,14 @@ button.addEventListener('click', (e) => {
 })
 
 container.addEventListener('click', (e) => {
-    if (winner.innerHTML) return;
-    if (e.target.hasChildNodes()) return;
-    let ele = addElement(e.target)
-    console.log(ele)
-    if (ele) {
-      let person = player ? "X" : "O";
-      winner.innerHTML = `${person} is the winner`
-    } 
-    if (!total) {
-      winner.innerHTML = "It's a tie"
-    }
+  if (winner.innerHTML) return;
+  if (e.target.hasChildNodes()) return;
+  let ele = addElement(e.target)
+  if (ele) {
+    let person = player ? "X" : "O";
+    winner.innerHTML = `${person} is the winner`
+  } 
+  if (!total) {
+    winner.innerHTML = "It's a tie"
+  }
 })

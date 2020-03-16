@@ -18,7 +18,7 @@ function addElement(ele){
 }
 
 function checkWinner() {
-  let fin = ""
+  let fin = false;
   rows.forEach((row) => {
     let winner = checkRow(row);
     if (winner) fin = winner;
@@ -33,15 +33,9 @@ function checkColumns(rows) {
   for (let i = 0; i < cols.length; i++) {
     let col = cols[i].childNodes;
     for (let j = 1; j <= 5; j += 2) {
-      if (j === 1) {
-        arr[0].push(col[j].classList.contains("selected") ? col[j].childNodes[0].innerHTML : " ");
-      }
-      if (j === 3) {
-        arr[1].push(col[j].classList.contains("selected") ? col[j].childNodes[0].innerHTML : " ")
-      }
-      if (j === 5) {
-        arr[2].push(col[j].classList.contains("selected") ? col[j].childNodes[0].innerHTML : " ")
-      }
+      if (j === 1) arr[0].push(col[j].classList.contains("selected") ? col[j].childNodes[0].innerHTML : " ");
+      if (j === 3) arr[1].push(col[j].classList.contains("selected") ? col[j].childNodes[0].innerHTML : " ");
+      if (j === 5) arr[2].push(col[j].classList.contains("selected") ? col[j].childNodes[0].innerHTML : " ");
     }
   }
   for (let i = 0; i < arr.length; i++) {
@@ -124,6 +118,12 @@ container.addEventListener('click', (e) => {
     winner.appendChild(span)
     return;
   } 
-  if (!total) winner.innerHTML = "It's a tie"
+  if (!total) {
+    let span = document.createElement('span');
+    span.classList.add('tie');
+    span.innerHTML = `It's a Tie`
+    winner.appendChild(span)
+    return;
+  }
   player = !player;
 })

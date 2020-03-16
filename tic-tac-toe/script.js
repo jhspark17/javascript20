@@ -38,17 +38,29 @@ function checkWinner() {
 }
 
 function checkColumns(rows) {
-  let arr1 = [];
-  let arr2 = [];
-  let arr3 = [];
+  let arr = [[], [], []];
   let cols = Object.values(rows).slice(0, 3);
   for (let i = 0; i < cols.length; i++) {
     let col = cols[i].childNodes;
     for (let j = 1; j <= 5; j += 2) {
-      console.log(col[j])
-      
+      if(col[j].classList.contains("selected")) {
+        if (j === 1) arr[0].push(col[j].childNodes[0].innerHTML)
+        if (j === 3) arr[1].push(col[j].childNodes[0].innerHTML)
+        if (j === 5) arr[2].push(col[j].childNodes[0].innerHTML)
+      }
     }
   }
+  console.log(arr)
+  for (let i = 0; i < arr.length; i++) {
+    let winner = 0;
+    for (let j = 0; j < arr.length; j++) {
+      if (arr[i][j] === "X") winner++;
+      if (arr[i][j] === "O") winner--;
+    }
+    if (winner === 3) return true;
+    if (winner === -3) return true;
+  }
+  return false;
 }
 
 function checkRow(row) {
@@ -61,9 +73,9 @@ function checkRow(row) {
       ele.childNodes[0].innerHTML === "X" ? winner++ : winner--;
     }
   }
-  if (winner === 3) return "Player 1"
-  if (winner === -3) return "Player 2";
-  else return "";
+  if (winner === 3) return true
+  if (winner === -3) return true;
+  else return false;
 }
 
 
@@ -88,8 +100,10 @@ container.addEventListener('click', (e) => {
     if (winner.innerHTML) return;
     if (e.target.hasChildNodes()) return;
     let ele = addElement(e.target)
-    if (typeof ele === "string") {
-      winner.innerHTML = `${ele} is the winner`
+    console.log(ele)
+    if (ele) {
+      let person = player ? "X" : "O";
+      winner.innerHTML = `${person} is the winner`
     } 
     if (!total) {
       winner.innerHTML = "It's a tie"

@@ -19,6 +19,7 @@ body {
   border-radius: 5px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   width: 500px;
+  position: relative;
 }
 
 .row{
@@ -45,12 +46,12 @@ body {
   background-color: transparent !important;
 }
 
-.x{
+.X{
   color: red;
   font-size: 100px;
 }
 
-.o{
+.O{
   color: blue;
   font-size: 100px;
 }
@@ -69,3 +70,14 @@ button{
   width: 20%;
 }
 
+.result{
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.result > span {
+  font-size: 24px !important;
+  position: absolute;
+}

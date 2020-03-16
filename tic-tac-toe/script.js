@@ -12,11 +12,11 @@ function addElement(ele){
   ele.classList.add('selected');
   if (player) {
     span.innerHTML = "X";
-    span.classList.add("x");
+    span.classList.add("X");
     ele.appendChild(span);
   } else {
     span.innerHTML = "O";
-    span.classList.add("o");
+    span.classList.add("O");
     ele.appendChild(span)
   }
   if (checkWinner()) {
@@ -53,7 +53,6 @@ function checkColumns(rows) {
       }
     }
   }
-  console.log(arr);
   for (let i = 0; i < arr.length; i++) {
     let winner = 0;
     for (let j = 0; j < arr.length; j++) {
@@ -69,14 +68,13 @@ function checkColumns(rows) {
       arr2[i].push(arr[j][i]);
     }
   }
-  console.log(arr2)
+
   if (checkDiag(arr)) return true;
   return false;
 }
 
 function checkDiag(arr) {
   let winner = 0;
-  console.log("hello")
   for (let i = 0; i < arr.length; i++) {
     if (arr[i][i] === "X") winner++;
     if (arr[i][i] === "O") winner--;
@@ -127,10 +125,12 @@ button.addEventListener('click', (e) => {
 container.addEventListener('click', (e) => {
   if (winner.innerHTML) return;
   if (e.target.hasChildNodes()) return;
-  let ele = addElement(e.target)
-  if (ele) {
+  if (addElement(e.target)) {
     let person = player ? "X" : "O";
-    winner.innerHTML = `${person} is the winner`
+    let span = document.createElement('span');
+    span.classList.add(person);
+    span.innerHTML = `${person} is the winner`
+    winner.appendChild(span)
   } 
   if (!total) {
     winner.innerHTML = "It's a tie"

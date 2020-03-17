@@ -2,16 +2,36 @@ const container = document.getElementById("container")
 const spots = document.querySelectorAll('.spot');
 const winner = document.querySelector(".result");
 const button = document.querySelector('button');
+const board = document.getElementById("board");
 const rows = document.querySelectorAll(".row");
-const arr = ["zero", "one", "two"];
+const arr = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight"];
 const rowsObj = {};
 const colsObj = {};
 const diagObj = {};
 let player = true;
-let total = 9;
+let length = 0;
+let total = 0;
 
-function initialize(){
-  for (let i = 0; i < 3; i++) {
+function initialize(rows = 0){
+  total = rows * rows;
+  length = rows;
+  for (let i = 0; i < rows; i++) {
+    let div = document.createElement("div");
+    div.classList.add("row")
+    div.setAttribute("id", arr[i]);
+    container.appendChild(div);
+  }
+  let tempRows = document.querySelectorAll(".row");
+  tempRows.forEach((row => {
+    for (let i = 0; i < rows; i++) {
+      let div = document.createElement("div");
+      div.classList.add("spot")
+      div.setAttribute("id", `${i}`);
+      row.appendChild(div);
+    }
+  }))
+
+  for (let i = 0; i < rows; i++) {
     rowsObj[i] = 0;
     colsObj[i] = 0;
   }
@@ -34,24 +54,16 @@ function checkWinner(row, col) {
   player ? rowsObj[row]++ : rowsObj[row]--;
   player ? colsObj[col]++ : colsObj[col]--;
   if (row === col) player ? diagObj.left++ : diagObj.left--;
-  if (row === 1 && col === 1) player ? diagObj.right++ : diagObj.right--;
-  if ((row === 0 && col === 2) || (row === 2 && col === 0)) player ? diagObj.right++ : diagObj.right--;
-  if (Math.abs(rowsObj[row]) === 3 || Math.abs(colsObj[col]) === 3) return true;
-  return Math.abs(diagObj.left) === 3 || Math.abs(diagObj.right) === 3 ? true : false;
+  if ((row === length - 1 - col && col === length - 1 - row)) player ? diagObj.right++ : diagObj.right--;
+  return Math.abs(rowsObj[row]) === length || Math.abs(colsObj[col]) === length ||Math.abs(diagObj.left) === length || Math.abs(diagObj.right) === length
 }
 
 
-function clearBoard(){
-  spots.forEach(spot => {
-    if (spot.hasChildNodes()) {
-      spot.classList.remove('selected');
-      spot.removeChild(spot.childNodes[0]);
-    }
-  })
+function clearBoard(rows){
+  while (container.hasChildNodes()) container.removeChild(container.lastChild);
   winner.innerHTML = "";
   player = true;
-  initialize();
-  total = 9;
+  initialize(rows)
 }
 
 function endGame() {
@@ -63,12 +75,11 @@ function endGame() {
   return;
 }
 
-button.addEventListener('click', (e) => (clearBoard()))
-
-container.addEventListener('click', (e) => {
+board.addEventListener('change', e => (clearBoard(+e.target.value)));
+button.addEventListener('click', e => (clearBoard(length)))
+container.addEventListener('click', e => {
   if (winner.innerHTML || e.target.hasChildNodes()) return;
   if (addElement(arr.indexOf(e.target.parentElement.id), e.target) || !total) return endGame();
   player = !player;
 })
 
-initialize();

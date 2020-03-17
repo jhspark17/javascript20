@@ -1,94 +1,57 @@
-const container = document.getElementById("container");
+const zero = document.getElementById("zero")
+const one = document.getElementById("one")
+const two = document.getElementById("two")
 const button = document.querySelector('button');
 const rows = document.querySelectorAll(".row")
 const spots = document.querySelectorAll('.spot');
 const winner = document.querySelector(".result");
+const rowsObj = {};
+const colsObj = {};
+const diagsObj = {};
 let player = true;
 let total = 9
+const arr = ["zero", "one", "two"];
 
-function addElement(ele){
+
+function initialize(){
+  for (let i = 0; i < 3; i++) {
+    rowsObj[i] = 0;
+    colsObj[i] = 0;
+  }
+  diagsObj.left = 0;
+  diagsObj.right = 0;
+}
+
+function addElement(row, col){
   total--
   let span = document.createElement('span');
   let mark = player ? "X" : "O";
-  ele.classList.add('selected');
+  col.classList.add('selected');
   span.innerHTML = mark;
   span.classList.add(mark);
-  ele.appendChild(span);
-  return checkWinner() ? true : false;
+  col.appendChild(span);
+  return checkWinner(row, +col.id) ? true : false;
 }
 
-function checkWinner() {
-  let fin = false;
-  rows.forEach((row) => {
-    let winner = checkRow(row);
-    if (winner) fin = winner;
-  })
-  if (fin) return fin;
-  return checkColumns(rows) ? true : false;
+function checkWinner(row, col) {
+  num = arr.indexOf(row);
+  console.log(num, col)
+  player ? rowsObj[num]++ : rowsObj[num]--
+  if (Math.abs(rowsObj[num]) === 3) return true
+  return checkColumns(num, col) ? true : false;
 }
 
-function checkColumns(rows) {
-  let arr = [[], [], []];
-  let cols = Object.values(rows).slice(0, 3);
-  for (let i = 0; i < cols.length; i++) {
-    let col = cols[i].childNodes;
-    for (let j = 1; j <= 5; j += 2) {
-      if (j === 1) arr[0].push(col[j].classList.contains("selected") ? col[j].childNodes[0].innerHTML : " ");
-      if (j === 3) arr[1].push(col[j].classList.contains("selected") ? col[j].childNodes[0].innerHTML : " ");
-      if (j === 5) arr[2].push(col[j].classList.contains("selected") ? col[j].childNodes[0].innerHTML : " ");
-    }
-  }
-  for (let i = 0; i < arr.length; i++) {
-    let winner = 0;
-    for (let j = 0; j < arr.length; j++) {
-      if (arr[i][j] === "X") winner++;
-      if (arr[i][j] === "O") winner--;
-    }
-    if (winner === 3) return true;
-    if (winner === -3) return true;
-  }
-  let arr2 = [[], [], []]
-  for (let i = 0; i < arr.length; i++) {
-    for (let j = 0; j < arr.length; j++) {
-      arr2[i].push(arr[j][i]);
-    }
-  }
-
-  if (checkDiag(arr)) return true;
-  return false;
+function checkColumns(row, col) { 
+  player ? colsObj[col]++ : colsObj[col]--
+  if (Math.abs(colsObj[col]) === 3) return true;
+  if (row === col) {
+    player ? diagsObj.left++ : diagsObj.left--;
+    if (row === 1) player ? diagsObj.right++ : diagsObj.right--;
+  } 
+  if (row === 0 && col === 2) player ? diagsObj.right++ : diagsObj.right--;
+  if (row === 2 && col === 0) player ? diagsObj.right++ : diagsObj.right--;
+  return Math.abs(diagsObj.left) === 3 || Math.abs(diagsObj.right) === 3 ? true : false;
 }
-
-function checkDiag(arr) {
-  let winner = 0;
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i][i] === "X") winner++;
-    if (arr[i][i] === "O") winner--;
-  }
-  if (winner === 3 || winner === -3) return true;
-  winner = 0;
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[arr.length - 1 - i][i] === "X") winner++;
-    if (arr[arr.length - 1 - i][i] === "O") winner--;
-  }
-  if (winner === 3 || winner === -3) return true;
-  return false;
-}
-
-function checkRow(row) {
-  let winner = 0;
-  let nodes = row.children;
-  let arr = [...Object.values(nodes)].slice(0, 4);
-  for (let i = 0; i < arr.length; i++) {
-    let ele = arr[i];
-    if (ele.classList.contains('selected')) {
-      ele.childNodes[0].innerHTML === "X" ? winner++ : winner--;
-    }
-  }
-  if (winner === 3) return true
-  if (winner === -3) return true;
-  else return false;
-}
-
 
 function clearBoard(){
   spots.forEach(spot => {
@@ -100,6 +63,7 @@ function clearBoard(){
   winner.innerHTML = "";
   total = 9;
   player = true;
+  initialize();
 }
 
 
@@ -107,19 +71,19 @@ button.addEventListener('click', (e) => {
   clearBoard();
 })
 
-container.addEventListener('click', (e) => {
+zero.addEventListener('click', (e) => {
   if (winner.innerHTML) return;
   if (e.target.hasChildNodes()) return;
-  if (addElement(e.target)) {
-    let person = player ? "X" : "O";
-    let span = document.createElement('span');
+  if (addElement(e.currentTarget.id, e.target)) {
+    const person = player ? "X" : "O";
+    const span = document.createElement('span');
     span.classList.add(person);
     span.innerHTML = `${person} is the winner`
     winner.appendChild(span)
     return;
   } 
   if (!total) {
-    let span = document.createElement('span');
+    const span = document.createElement('span');
     span.classList.add('tie');
     span.innerHTML = `It's a Tie`
     winner.appendChild(span)
@@ -127,3 +91,47 @@ container.addEventListener('click', (e) => {
   }
   player = !player;
 })
+
+one.addEventListener('click', (e) => {
+  if (winner.innerHTML) return;
+  if (e.target.hasChildNodes()) return;
+  if (addElement(e.currentTarget.id, e.target)) {
+    const person = player ? "X" : "O";
+    const span = document.createElement('span');
+    span.classList.add(person);
+    span.innerHTML = `${person} is the winner`
+    winner.appendChild(span)
+    return;
+  } 
+  if (!total) {
+    const span = document.createElement('span');
+    span.classList.add('tie');
+    span.innerHTML = `It's a Tie`
+    winner.appendChild(span)
+    return;
+  }
+  player = !player;
+})
+
+two.addEventListener('click', (e) => {
+  if (winner.innerHTML) return;
+  if (e.target.hasChildNodes()) return;
+  if (addElement(e.currentTarget.id, e.target)) {
+    const person = player ? "X" : "O";
+    const span = document.createElement('span');
+    span.classList.add(person);
+    span.innerHTML = `${person} is the winner`
+    winner.appendChild(span)
+    return;
+  } 
+  if (!total) {
+    const span = document.createElement('span');
+    span.classList.add('tie');
+    span.innerHTML = `It's a Tie`
+    winner.appendChild(span)
+    return;
+  }
+  player = !player;
+})
+
+initialize();

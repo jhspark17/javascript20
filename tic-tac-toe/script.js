@@ -1,14 +1,14 @@
 const container = document.getElementById("container")
-const button = document.querySelector('button');
-const rows = document.querySelectorAll(".row")
 const spots = document.querySelectorAll('.spot');
 const winner = document.querySelector(".result");
+const button = document.querySelector('button');
+const rows = document.querySelectorAll(".row");
 const arr = ["zero", "one", "two"];
 const rowsObj = {};
 const colsObj = {};
 const diagObj = {};
 let player = true;
-let total = 9
+let total = 9;
 
 function initialize(){
   for (let i = 0; i < 3; i++) {
@@ -20,26 +20,23 @@ function initialize(){
 }
 
 function addElement(row, col){
-  total--
-  let span = document.createElement('span');
-  let mark = player ? "X" : "O";
+  const span = document.createElement('span');
+  const mark = player ? "X" : "O";
   col.classList.add('selected');
-  span.innerHTML = mark;
   span.classList.add(mark);
+  span.innerHTML = mark;
   col.appendChild(span);
+  total--;
   return checkWinner(row, +col.id) ? true : false;
 }
 
 function checkWinner(row, col) {
-  player ? rowsObj[row]++ : rowsObj[row]--
-  if (Math.abs(rowsObj[row]) === 3) return true
-  player ? colsObj[col]++ : colsObj[col]--
-  if (Math.abs(colsObj[col]) === 3) return true;
-  if (row === col) {
-    player ? diagObj.left++ : diagObj.left--;
-    if (row === 1) player ? diagObj.right++ : diagObj.right--;
-  } 
+  player ? rowsObj[row]++ : rowsObj[row]--;
+  player ? colsObj[col]++ : colsObj[col]--;
+  if (row === col) player ? diagObj.left++ : diagObj.left--;
+  if (row === 1 && col === 1) player ? diagObj.right++ : diagObj.right--;
   if ((row === 0 && col === 2) || (row === 2 && col === 0)) player ? diagObj.right++ : diagObj.right--;
+  if (Math.abs(rowsObj[row]) === 3 || Math.abs(colsObj[col]) === 3) return true;
   return Math.abs(diagObj.left) === 3 || Math.abs(diagObj.right) === 3 ? true : false;
 }
 
@@ -52,24 +49,16 @@ function clearBoard(){
     }
   })
   winner.innerHTML = "";
-  total = 9;
   player = true;
   initialize();
+  total = 9;
 }
 
 function endGame() {
+  const span = document.createElement('span');
   const person = player ? "X" : "O";
-  const span = document.createElement('span');
-  span.classList.add(person);
-  span.innerHTML = `${person} is the winner`
-  winner.appendChild(span)
-  return;
-}
-
-function tie() {
-  const span = document.createElement('span');
-  span.classList.add('tie');
-  span.innerHTML = `It's a Tie`
+  span.innerHTML = !total ? `It's a Tie` : `${person} is the winner`
+  span.classList.add(!total ? 'tie' : person);
   winner.appendChild(span)
   return;
 }
@@ -77,10 +66,8 @@ function tie() {
 button.addEventListener('click', (e) => (clearBoard()))
 
 container.addEventListener('click', (e) => {
-  if (winner.innerHTML) return;
-  if (e.target.hasChildNodes()) return;
-  if (addElement(arr.indexOf(e.target.parentElement.id), e.target)) return endGame();
-  if (!total) return tie()
+  if (winner.innerHTML || e.target.hasChildNodes()) return;
+  if (addElement(arr.indexOf(e.target.parentElement.id), e.target) || !total) return endGame();
   player = !player;
 })
 

@@ -1,17 +1,14 @@
-const zero = document.getElementById("zero")
-const one = document.getElementById("one")
-const two = document.getElementById("two")
+const container = document.getElementById("container")
 const button = document.querySelector('button');
 const rows = document.querySelectorAll(".row")
 const spots = document.querySelectorAll('.spot');
 const winner = document.querySelector(".result");
+const arr = ["zero", "one", "two"];
 const rowsObj = {};
 const colsObj = {};
 const diagObj = {};
 let player = true;
 let total = 9
-const arr = ["zero", "one", "two"];
-
 
 function initialize(){
   for (let i = 0; i < 3; i++) {
@@ -34,17 +31,15 @@ function addElement(row, col){
 }
 
 function checkWinner(row, col) {
-  num = arr.indexOf(row);
-  player ? rowsObj[num]++ : rowsObj[num]--
-  if (Math.abs(rowsObj[num]) === 3) return true
+  player ? rowsObj[row]++ : rowsObj[row]--
+  if (Math.abs(rowsObj[row]) === 3) return true
   player ? colsObj[col]++ : colsObj[col]--
   if (Math.abs(colsObj[col]) === 3) return true;
-  if (num === col) {
+  if (row === col) {
     player ? diagObj.left++ : diagObj.left--;
-    if (num === 1) player ? diagObj.right++ : diagObj.right--;
+    if (row === 1) player ? diagObj.right++ : diagObj.right--;
   } 
-  if (num === 0 && col === 2) player ? diagObj.right++ : diagObj.right--;
-  if (num === 2 && col === 0) player ? diagObj.right++ : diagObj.right--;
+  if ((row === 0 && col === 2) || (row === 2 && col === 0)) player ? diagObj.right++ : diagObj.right--;
   return Math.abs(diagObj.left) === 3 || Math.abs(diagObj.right) === 3 ? true : false;
 }
 
@@ -70,6 +65,7 @@ function endGame() {
   winner.appendChild(span)
   return;
 }
+
 function tie() {
   const span = document.createElement('span');
   span.classList.add('tie');
@@ -78,30 +74,12 @@ function tie() {
   return;
 }
 
-button.addEventListener('click', (e) => {
-  clearBoard();
-})
+button.addEventListener('click', (e) => (clearBoard()))
 
-zero.addEventListener('click', (e) => {
+container.addEventListener('click', (e) => {
   if (winner.innerHTML) return;
   if (e.target.hasChildNodes()) return;
-  if (addElement(e.currentTarget.id, e.target)) return endGame();
-  if (!total) return tie()
-  player = !player;
-})
-
-one.addEventListener('click', (e) => {
-  if (winner.innerHTML) return;
-  if (e.target.hasChildNodes()) return;
-  if (addElement(e.currentTarget.id, e.target)) return endGame();
-  if (!total) return tie()
-  player = !player;
-})
-
-two.addEventListener('click', (e) => {
-  if (winner.innerHTML) return;
-  if (e.target.hasChildNodes()) return;
-  if (addElement(e.currentTarget.id, e.target)) return endGame();
+  if (addElement(arr.indexOf(e.target.parentElement.id), e.target)) return endGame();
   if (!total) return tie()
   player = !player;
 })

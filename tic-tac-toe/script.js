@@ -7,7 +7,7 @@ const spots = document.querySelectorAll('.spot');
 const winner = document.querySelector(".result");
 const rowsObj = {};
 const colsObj = {};
-const diagsObj = {};
+const diagObj = {};
 let player = true;
 let total = 9
 const arr = ["zero", "one", "two"];
@@ -18,8 +18,8 @@ function initialize(){
     rowsObj[i] = 0;
     colsObj[i] = 0;
   }
-  diagsObj.left = 0;
-  diagsObj.right = 0;
+  diagObj.left = 0;
+  diagObj.right = 0;
 }
 
 function addElement(row, col){
@@ -35,23 +35,19 @@ function addElement(row, col){
 
 function checkWinner(row, col) {
   num = arr.indexOf(row);
-  console.log(num, col)
   player ? rowsObj[num]++ : rowsObj[num]--
   if (Math.abs(rowsObj[num]) === 3) return true
-  return checkColumns(num, col) ? true : false;
-}
-
-function checkColumns(row, col) { 
   player ? colsObj[col]++ : colsObj[col]--
   if (Math.abs(colsObj[col]) === 3) return true;
-  if (row === col) {
-    player ? diagsObj.left++ : diagsObj.left--;
-    if (row === 1) player ? diagsObj.right++ : diagsObj.right--;
+  if (num === col) {
+    player ? diagObj.left++ : diagObj.left--;
+    if (num === 1) player ? diagObj.right++ : diagObj.right--;
   } 
-  if (row === 0 && col === 2) player ? diagsObj.right++ : diagsObj.right--;
-  if (row === 2 && col === 0) player ? diagsObj.right++ : diagsObj.right--;
-  return Math.abs(diagsObj.left) === 3 || Math.abs(diagsObj.right) === 3 ? true : false;
+  if (num === 0 && col === 2) player ? diagObj.right++ : diagObj.right--;
+  if (num === 2 && col === 0) player ? diagObj.right++ : diagObj.right--;
+  return Math.abs(diagObj.left) === 3 || Math.abs(diagObj.right) === 3 ? true : false;
 }
+
 
 function clearBoard(){
   spots.forEach(spot => {
@@ -66,6 +62,21 @@ function clearBoard(){
   initialize();
 }
 
+function endGame() {
+  const person = player ? "X" : "O";
+  const span = document.createElement('span');
+  span.classList.add(person);
+  span.innerHTML = `${person} is the winner`
+  winner.appendChild(span)
+  return;
+}
+function tie() {
+  const span = document.createElement('span');
+  span.classList.add('tie');
+  span.innerHTML = `It's a Tie`
+  winner.appendChild(span)
+  return;
+}
 
 button.addEventListener('click', (e) => {
   clearBoard();
@@ -74,63 +85,24 @@ button.addEventListener('click', (e) => {
 zero.addEventListener('click', (e) => {
   if (winner.innerHTML) return;
   if (e.target.hasChildNodes()) return;
-  if (addElement(e.currentTarget.id, e.target)) {
-    const person = player ? "X" : "O";
-    const span = document.createElement('span');
-    span.classList.add(person);
-    span.innerHTML = `${person} is the winner`
-    winner.appendChild(span)
-    return;
-  } 
-  if (!total) {
-    const span = document.createElement('span');
-    span.classList.add('tie');
-    span.innerHTML = `It's a Tie`
-    winner.appendChild(span)
-    return;
-  }
+  if (addElement(e.currentTarget.id, e.target)) return endGame();
+  if (!total) return tie()
   player = !player;
 })
 
 one.addEventListener('click', (e) => {
   if (winner.innerHTML) return;
   if (e.target.hasChildNodes()) return;
-  if (addElement(e.currentTarget.id, e.target)) {
-    const person = player ? "X" : "O";
-    const span = document.createElement('span');
-    span.classList.add(person);
-    span.innerHTML = `${person} is the winner`
-    winner.appendChild(span)
-    return;
-  } 
-  if (!total) {
-    const span = document.createElement('span');
-    span.classList.add('tie');
-    span.innerHTML = `It's a Tie`
-    winner.appendChild(span)
-    return;
-  }
+  if (addElement(e.currentTarget.id, e.target)) return endGame();
+  if (!total) return tie()
   player = !player;
 })
 
 two.addEventListener('click', (e) => {
   if (winner.innerHTML) return;
   if (e.target.hasChildNodes()) return;
-  if (addElement(e.currentTarget.id, e.target)) {
-    const person = player ? "X" : "O";
-    const span = document.createElement('span');
-    span.classList.add(person);
-    span.innerHTML = `${person} is the winner`
-    winner.appendChild(span)
-    return;
-  } 
-  if (!total) {
-    const span = document.createElement('span');
-    span.classList.add('tie');
-    span.innerHTML = `It's a Tie`
-    winner.appendChild(span)
-    return;
-  }
+  if (addElement(e.currentTarget.id, e.target)) return endGame();
+  if (!total) return tie()
   player = !player;
 })
 

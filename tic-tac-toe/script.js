@@ -1,7 +1,7 @@
 const arr = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight"];
 const container = document.getElementById("container")
 const spots = document.querySelectorAll('.spot');
-const winner = document.querySelector(".result");
+const result = document.querySelector(".result");
 const button = document.querySelector('button');
 const board = document.getElementById("board");
 const rows = document.querySelectorAll(".row");
@@ -62,24 +62,25 @@ function checkWinner(row, col) {
 
 function clearBoard(rows){
   while (container.hasChildNodes()) container.removeChild(container.lastChild);
-  winner.innerHTML = "";
+  result.innerHTML = "";
   initialize(rows)
   player = true;
 }
 
-function endGame() {
-  const span = document.createElement('span');
+function endGame(winner) {
   const person = player ? "X" : "O";
-  span.innerHTML = !total ? `It's a Tie` : `${person} is the winner`;
-  span.classList.add(!total ? 'tie' : person);
-  winner.appendChild(span);
+  const span = document.createElement('span');
+  span.innerHTML = winner ? `${person} is the winner` : `It's a Tie` ;
+  span.classList.add(winner ? person : 'tie');
+  result.appendChild(span);
 }
 
 board.addEventListener('change', e => (clearBoard(+e.target.value)));
 button.addEventListener('click', e => (clearBoard(length)))
 container.addEventListener('click', e => {
-  if (winner.innerHTML || e.target.hasChildNodes()) return;
-  if (addElement(arr.indexOf(e.target.parentElement.id), e.target) || !total) return endGame();
+  if (result.innerHTML || e.target.hasChildNodes()) return;
+  if (addElement(arr.indexOf(e.target.parentElement.id), e.target)) return endGame(true);
+  if (!total) return endGame(false);
   player = !player;
 })
 

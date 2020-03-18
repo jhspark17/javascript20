@@ -1,10 +1,10 @@
+const arr = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight"];
 const container = document.getElementById("container")
 const spots = document.querySelectorAll('.spot');
 const winner = document.querySelector(".result");
 const button = document.querySelector('button');
 const board = document.getElementById("board");
 const rows = document.querySelectorAll(".row");
-const arr = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight"];
 const rowsObj = {};
 const colsObj = {};
 const diagObj = {};
@@ -12,21 +12,22 @@ let player = true;
 let length = 0;
 let total = 0;
 
-function initialize(rows = 0){
+function initialize(rows = 3){
   total = rows * rows;
   length = rows;
+  let div;
   for (let i = 0; i < rows; i++) {
-    let div = document.createElement("div");
-    div.classList.add("row")
+    div = document.createElement("div");
     div.setAttribute("id", arr[i]);
+    div.classList.add("row")
     container.appendChild(div);
   }
   let tempRows = document.querySelectorAll(".row");
   tempRows.forEach((row => {
     for (let i = 0; i < rows; i++) {
-      let div = document.createElement("div");
-      div.classList.add("spot")
+      div = document.createElement("div");
       div.setAttribute("id", `${i}`);
+      div.classList.add("spot")
       row.appendChild(div);
     }
   }))
@@ -47,14 +48,14 @@ function addElement(row, col){
   span.innerHTML = mark;
   col.appendChild(span);
   total--;
-  return checkWinner(row, +col.id) ? true : false;
+  return checkWinner(row, +col.id)
 }
 
 function checkWinner(row, col) {
   player ? rowsObj[row]++ : rowsObj[row]--;
   player ? colsObj[col]++ : colsObj[col]--;
   if (row === col) player ? diagObj.left++ : diagObj.left--;
-  if ((row === length - 1 - col && col === length - 1 - row)) player ? diagObj.right++ : diagObj.right--;
+  if (row === length - 1 - col && col === length - 1 - row) player ? diagObj.right++ : diagObj.right--;
   return Math.abs(rowsObj[row]) === length || Math.abs(colsObj[col]) === length ||Math.abs(diagObj.left) === length || Math.abs(diagObj.right) === length
 }
 
@@ -62,17 +63,16 @@ function checkWinner(row, col) {
 function clearBoard(rows){
   while (container.hasChildNodes()) container.removeChild(container.lastChild);
   winner.innerHTML = "";
-  player = true;
   initialize(rows)
+  player = true;
 }
 
 function endGame() {
   const span = document.createElement('span');
   const person = player ? "X" : "O";
-  span.innerHTML = !total ? `It's a Tie` : `${person} is the winner`
+  span.innerHTML = !total ? `It's a Tie` : `${person} is the winner`;
   span.classList.add(!total ? 'tie' : person);
-  winner.appendChild(span)
-  return;
+  winner.appendChild(span);
 }
 
 board.addEventListener('change', e => (clearBoard(+e.target.value)));
@@ -83,3 +83,4 @@ container.addEventListener('click', e => {
   player = !player;
 })
 
+initialize()
